@@ -1,0 +1,45 @@
+[
+  {
+    "operacao": "CREATE",
+    "method": "POST",
+    "path": "/api/solicitacoes-ajuda",
+    "body": {
+      "nomeSolicitante": "Ana Pereira",
+      "contato": "(51) 99999-0003",
+      "descricao": "Comunidade sem agua potavel apos a enchente.",
+      "pessoasAfetadas": 15,
+      "prioridade": 1,
+      "regiao": { "id": 2 }
+    }
+  },
+  {
+    "operacao": "READ_ALL",
+    "method": "GET",
+    "path": "/api/solicitacoes-ajuda"
+  },
+  {
+    "operacao": "READ_BY_ID",
+    "method": "GET",
+    "path": "/api/solicitacoes-ajuda/1"
+  },
+  {
+    "operacao": "UPDATE",
+    "method": "PUT",
+    "path": "/api/solicitacoes-ajuda/1",
+    "body": {
+      "protocolo": "NV-2026-0001",
+      "nomeSolicitante": "Maria Silva",
+      "contato": "(21) 99999-0001",
+      "descricao": "Falta de agua ha 3 dias no bairro Nova Iguacu.",
+      "pessoasAfetadas": 4,
+      "prioridade": 1,
+      "status": "EM_ATENDIMENTO",
+      "regiao": { "id": 1 }
+    }
+  },
+  {
+    "operacao": "DELETE",
+    "method": "DELETE",
+    "path": "/api/solicitacoes-ajuda/3"
+  }
+]

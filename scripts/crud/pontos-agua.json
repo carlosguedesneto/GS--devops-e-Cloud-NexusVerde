@@ -1,0 +1,47 @@
+[
+  {
+    "operacao": "CREATE",
+    "method": "POST",
+    "path": "/api/pontos-agua",
+    "body": {
+      "nome": "Caixa Dagua Sao Leopoldo",
+      "endereco": "Rua Lindolfo Collor, 200",
+      "municipio": "Sao Leopoldo",
+      "uf": "RS",
+      "tipo": "CAIXA_DAGUA",
+      "capacidadeLitros": 30000,
+      "status": "DISPONIVEL",
+      "regiao": { "id": 1 }
+    }
+  },
+  {
+    "operacao": "READ_ALL",
+    "method": "GET",
+    "path": "/api/pontos-agua"
+  },
+  {
+    "operacao": "READ_BY_ID",
+    "method": "GET",
+    "path": "/api/pontos-agua/1"
+  },
+  {
+    "operacao": "UPDATE",
+    "method": "PUT",
+    "path": "/api/pontos-agua/1",
+    "body": {
+      "nome": "Caixa Dagua Central",
+      "endereco": "Praca Central, s/n",
+      "municipio": "Nova Iguacu",
+      "uf": "RJ",
+      "tipo": "CAIXA_DAGUA",
+      "capacidadeLitros": 40000,
+      "status": "DISPONIVEL",
+      "regiao": { "id": 1 }
+    }
+  },
+  {
+    "operacao": "DELETE",
+    "method": "DELETE",
+    "path": "/api/pontos-agua/3"
+  }
+]

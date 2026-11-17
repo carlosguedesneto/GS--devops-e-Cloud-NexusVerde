@@ -1,0 +1,47 @@
+[
+  {
+    "operacao": "CREATE",
+    "method": "POST",
+    "path": "/api/regioes-afetadas",
+    "body": {
+      "nome": "Vale do Sinos",
+      "municipio": "Sao Leopoldo",
+      "uf": "RS",
+      "populacaoAfetada": 8000,
+      "nivelRisco": "ALTO",
+      "status": "ATIVA",
+      "latitude": -29.760000,
+      "longitude": -51.150000
+    }
+  },
+  {
+    "operacao": "READ_ALL",
+    "method": "GET",
+    "path": "/api/regioes-afetadas"
+  },
+  {
+    "operacao": "READ_BY_ID",
+    "method": "GET",
+    "path": "/api/regioes-afetadas/1"
+  },
+  {
+    "operacao": "UPDATE",
+    "method": "PUT",
+    "path": "/api/regioes-afetadas/1",
+    "body": {
+      "nome": "Baixada Fluminense",
+      "municipio": "Nova Iguacu",
+      "uf": "RJ",
+      "populacaoAfetada": 26000,
+      "nivelRisco": "CRITICO",
+      "status": "ATIVA",
+      "latitude": -22.759600,
+      "longitude": -43.451000
+    }
+  },
+  {
+    "operacao": "DELETE",
+    "method": "DELETE",
+    "path": "/api/regioes-afetadas/3"
+  }
+]

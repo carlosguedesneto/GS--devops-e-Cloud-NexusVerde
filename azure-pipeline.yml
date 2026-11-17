@@ -1,0 +1,102 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  # Grupo de variaveis criado no Azure Pipelines (Library > Variable groups)
+  - group: nexus-verde-vars
+  - name: mavenPomFile
+    value: 'nexus-verde/pom.xml'
+  - name: javaVersionSpec
+    value: '17'
+  - name: artifactName
+    value: 'drop'
+
+stages:
+- stage: Build_and_Test_CI
+  displayName: 'CI: Build e Testes Automaticos'
+  jobs:
+  - job: BuildJob
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: JavaToolInstaller@0
+      displayName: 'Instalar JDK 17'
+      inputs:
+        versionSpec: '$(javaVersionSpec)'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+
+    - task: Maven@4
+      displayName: 'Maven: clean test package'
+      inputs:
+        mavenPomFile: '$(mavenPomFile)'
+        goals: 'clean test package'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        jdkVersionOption: '1.17'
+
+    - task: PublishTestResults@2
+      displayName: 'Publicar resultados JUnit'
+      inputs:
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        testRunTitle: 'Nexus Verde - Testes Unitarios'
+      condition: succeededOrFailed()
+
+    - task: CopyFiles@2
+      displayName: 'Copiar JAR para Staging'
+      inputs:
+        SourceFolder: '$(system.defaultworkingdirectory)/nexus-verde/target'
+        Contents: '*.jar'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publicar artefato no Azure DevOps'
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+        ArtifactName: '$(artifactName)'
+        publishLocation: 'Container'
+
+- stage: Deploy_CD
+  displayName: 'CD: Deploy Automatico no Azure Web App'
+  dependsOn: Build_and_Test_CI
+  condition: succeeded()
+  jobs:
+  - deployment: DeployJob
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Baixar artefato do CI'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: '$(artifactName)'
+              downloadPath: '$(System.ArtifactsDirectory)'
+
+          - task: AzureAppServiceSettings@0
+            displayName: 'Configurar variaveis de ambiente do Web App'
+            inputs:
+              azureSubscription: '$(azureSubscription)'
+              resourceGroupName: '$(resourceGroupName)'
+              appName: '$(webAppName)'
+              appSettings: |
+                [
+                  {"name": "DB_URL", "value": "$(DB_URL)", "slotSetting": false},
+                  {"name": "DB_USER", "value": "$(DB_USER)", "slotSetting": false},
+                  {"name": "DB_PASS", "value": "$(DB_PASS)", "slotSetting": false}
+                ]
+
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy para o Azure Web App'
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: '$(azureSubscription)'
+              appType: 'webAppLinux'
+              WebAppName: '$(webAppName)'
+              package: '$(System.ArtifactsDirectory)/$(artifactName)/*.jar'
