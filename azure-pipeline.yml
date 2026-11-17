@@ -1,7 +1,7 @@
 trigger:
   branches:
     include:
-      - main
+    - main
 
 variables:
   # Grupo de variaveis criado no Azure Pipelines (Library > Variable groups)
@@ -65,6 +65,8 @@ stages:
   condition: succeeded()
   jobs:
   - deployment: DeployJob
+    displayName: 'Deploy Job'
+    environment: 'nexus-verde-env' # Linha adicionada para resolver o erro
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
