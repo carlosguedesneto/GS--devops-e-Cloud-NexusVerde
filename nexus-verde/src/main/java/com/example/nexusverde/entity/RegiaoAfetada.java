@@ -36,10 +36,10 @@ public class RegiaoAfetada {
     @Column(nullable = false, length = 20)
     private String status;
 
-    @Column(precision = 9, scale = 6)
+    @Column(precision = 9)
     private Double latitude;
 
-    @Column(precision = 9, scale = 6)
+    @Column(precision = 9)
     private Double longitude;
 
     @Column(name = "data_registro")
