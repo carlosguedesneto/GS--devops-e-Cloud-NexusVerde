@@ -17,11 +17,6 @@ public class PontoAguaController {
         this.service = service;
     }
 
-    @GetMapping("/status")
-    public String statusApi() {
-        return "Nexus Verde API funcionando com sucesso!";
-    }
-
     @GetMapping
     public List<PontoAgua> listarTodos() {
         return service.listarTodos();
