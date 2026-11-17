@@ -79,18 +79,17 @@ stages:
               artifactName: '$(artifactName)'
               downloadPath: '$(System.ArtifactsDirectory)'
 
-          - task: AzureAppServiceSettings@0
+          - task: AzureCLI@2
             displayName: 'Configurar variaveis de ambiente do Web App'
             inputs:
               azureSubscription: '$(azureSubscription)'
-              resourceGroupName: '$(resourceGroupName)'
-              appName: '$(webAppName)'
-              appSettings: |
-                [
-                  {"name": "DB_URL", "value": "$(DB_URL)", "slotSetting": false},
-                  {"name": "DB_USER", "value": "$(DB_USER)", "slotSetting": false},
-                  {"name": "DB_PASS", "value": "$(DB_PASS)", "slotSetting": false}
-                ]
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az webapp config appsettings set \
+                  --name $(webAppName) \
+                  --resource-group $(resourceGroupName) \
+                  --settings DB_URL="$(DB_URL)" DB_USER="$(DB_USER)" DB_PASS="$(DB_PASS)"
 
           - task: AzureRmWebAppDeployment@4
             displayName: 'Deploy para o Azure Web App'
@@ -99,4 +98,4 @@ stages:
               azureSubscription: '$(azureSubscription)'
               appType: 'webAppLinux'
               WebAppName: '$(webAppName)'
-              package: '$(System.ArtifactsDirectory)/$(artifactName)/*.jar'
+              package: '$(System.ArtifactsDirectory)/drop/*.jar'
